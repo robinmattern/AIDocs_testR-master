@@ -1,0 +1,57 @@
+*_v[0-9]*
+*_t[0-9]*
+*_r[0-9]*
+
+_env
+.env
+!.env*tests.txt
+!.env*test.txt
+
+run-tests.txt
+chroma.pid 
+chroma.log 
+s14_scoring-prompt.txt
+
+node_modules
+package-lock.json
+
+# From https://github.com/vjohnston/nextjs-chatgpt
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+# .env - uncomment once you put your key
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# python
+venv
+
+*chroma_data 

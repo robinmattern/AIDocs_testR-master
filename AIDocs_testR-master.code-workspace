@@ -1,0 +1,11 @@
+{
+    "folders": [
+        {
+            "name": "AIDocs_testR-master",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "liveServer.settings.port": 5500
+    },
+}
