@@ -43,6 +43,7 @@
 #.(50514.07   5/14/25 RAM  7:45p| Bump version from u2.09 to u2.10
 #.(50513.05b  5/15/25 RAM  9:15a| More bEnvs 
 #.(50521.01   5/21/25 RAM  9:30a| Override scoring display sections
+#.(50521.02   5/21/25 RAM  9:45a| Override SCORING_MODEL
 #.(50510.04b  5/21/25 RAM 11:15a| Use Coherence instead of Quality  
 #
 ##PRGM     +====================+===============================================+
@@ -95,18 +96,18 @@
   async function  main( pArgs ) {  // score.mjs 
 
         if (process.env.SCORING != "1") {                                               // .(50508.01.1 RAM Skip if SCORING != 1 Beg)
-            sayMsg( "AIT14[  95]  Skipping scoring run" )
+            sayMsg( "AIT14[  99]  Skipping scoring run" )
             exit_wCR()
             process.exit()
             }                                                                           // .(50508.01.1 End)
        var{ bDebug, bDoit }  =  FRT.setVars()
             global.bQuiet    =  0                                                       // .(50503.04.1 RAM Was 2, quieting sayMsg)
             global.bNoLog    = (process.env.LOGGING || '').match( /log/ ) == null                           // .(50510.01.1)
-            sayMsg( `S1401[ 104]  APP: '${aApp}', bDoit: '${bDoit}, bDebug: '${bDebug}', DRYRUN: '${process.env.DRYRUN}', SCORING: '${process.env.SCORING}', PC_CODE: '${process.env.PC_CODE}', aLog: '${"   "}', bNoLog: '${global.bNoLog ? 1 : 0}'`, bEnvs ); // .(50513.05.11) // process.exit() 
+            sayMsg( `S1401[ 106]  APP: '${aApp}', bDoit: '${bDoit}, bDebug: '${bDebug}', DRYRUN: '${process.env.DRYRUN}', SCORING: '${process.env.SCORING}', PC_CODE: '${process.env.PC_CODE}', aLog: '${"   "}', bNoLog: '${global.bNoLog ? 1 : 0}'`, bEnvs ); // .(50513.05.11) // process.exit() 
 
        var  pArgs            =  parseArgs()
 //          aModel           =  pArgs.modelName || 'gemma2:2b'                                              //#.(50521.02.1)
-            aModel           =  process.env.SCORING_MODEL ? process.env.SCORING_MODEL : pArgs.modelName     // .(50521.02.1)
+            aModel           =  process.env.SCORING_MODEL ? process.env.SCORING_MODEL : pArgs.modelName     // .(50521.02.1 RAM Override SCORING_MODEL)
             aModel           =  aModel ? aModel : 'gemma2:2b'                                               // .(50521.02.2)
        var  aOth_App         =  pArgs.app       || 's13'                                                    // .(50503.05.x Get Oth_App .env Beg)
        var  aOth_App2        = `a${pArgs.app.slice(1)}`                                                     // .(50510.02.1)
@@ -141,7 +142,7 @@
             }                                                                                               // .(50510.02.4 End)      
       var   mRespIds = [];  if (FRT.checkFileSync( aRunTestsFile ).isFile) {                            
             mRespIds         =  FRT.readFileSync(  aRunTestsFile ).trim().split( '\n' )  }                                           
-                                FRT.sayMsg( `AIT14[ 143]  Looking for these RunIds, '${ mRespIds.join( ', ') }'.`, -1 )
+                                FRT.sayMsg( `AIT14[ 145]  Looking for these RunIds, '${ mRespIds.join( ', ') }'.`, -1 )
 //     var  mResponseFiles   =  mStatsSheet.filter( findTestIds )                                           //#.(50507.08b.1 RAM Don't use findTestIds)
 //          mResponseFiles   =  mResponseFiles.map( aRow => aRow.split('\t')[26].replace(/\.txt/, '.json')) //#.(50507.08b.1)
        var  mResponseFiles   =  findRespIds( mStatsSheet, mRespIds )                                        // .(50507.08b.1 RAM Do Use findRespIds)
@@ -152,7 +153,7 @@
             usrMsg(   `        in order to score these RunIds, '${ mRespIds.join( ', ') }'.` )
             exit_wCR() 
         } else { var  s      =  mResponseFiles.length == 1 ? '' : 's'  
-                                FRT.sayMsg( `AIT14[ 141]  Found ${mResponseFiles.length} statsheet row${s}.`, -1 )
+                                FRT.sayMsg( `AIT14[ 156]  Found ${mResponseFiles.length} statsheet row${s}.`, -1 )
             }                                                                                               // .(50507.08a.1 End)
 //          --------------------------------------------------------------
 
@@ -211,7 +212,7 @@ async  function  scoreTest( aStatsSheetFile, aResponseFile, i ) {
 //          pStats.Overall   =  pScores.scores[3].score || 0      
             pStats.Accuracy  =  getScore( 'Accuracy'    )                               // .(50510.04.2 RAM Position in pScores.scores array wasn't cutting it)
 //          pStats.Quality   =  getScore( 'Quality'     )                               //#.(50510.04b.1 RAM Get rid of Quality)
-//      if(!pStats.Quality)  {  pStats.Quality = getScore( 'Coherence'   ) }            //#.(50510.04.3 RAM ??).(50510.04b.1)
+//      if(!pStats.Quality)  {  pStats.Quality = getScore( 'Coherence'   ) }            //#.(50510.04.3  RAM ??).(50510.04b.1)
             pStats.Coherence =  getScore( 'Coherence'   )                               // .(50510.04b.2 RAM Use Coherence)
             pStats.Relevance =  getScore( 'Relevance'   )                  
             pStats.Overall   =  getScore( 'Total Score' )                  
@@ -225,7 +226,7 @@ async  function  scoreTest( aStatsSheetFile, aResponseFile, i ) {
 
 //      if (mNotFound.length > 0) {                                                     //#.(50510.04.6 Beg)
 //          usrMsg(            `* These scores were not found: ${ mNotFound.join( ", " ) }.` )
-//          sayMsg( `AIT14[ 203]* These scores were not found: ${ mNotFound.join( ", " ) }.` )
+//          sayMsg( `AIT14[ 229]* These scores were not found: ${ mNotFound.join( ", " ) }.` )
 //          }                                                                           //#.(50510.04.6 End)
             pJSON_Response.ModelQuery.Evaluation = pScores.formattedEvaluation
 //          console.log(     `3 aResponseFile: '${ MWT.fixPath( FRT.__basedir, aResponseFile )  }'` )
@@ -268,7 +269,7 @@ async  function  scoreTest( aStatsSheetFile, aResponseFile, i ) {
             
         if (mNotFound.length > 0 && bEnvs != 1) {                                                           // .(50513.05b.4).(50510.04.6 Beg)
             usrMsg(            `* These scores were not found: ${ mNotFound.join( ", " ) }.` )
-            sayMsg( `AIT14[ 262]* These scores were not found: ${ mNotFound.join( ", " ) }.` )
+            sayMsg( `AIT14[ 272]* These scores were not found: ${ mNotFound.join( ", " ) }.` )
             }                                                                           // .(50510.04.6 End)
 
   function  getScore( aCriteria ) {                                                     // .(50510.04.7 RAM Write getScore Beg)
@@ -289,12 +290,12 @@ async function  evaluateResponse( modelName, userPrompt, systemPrompt, response,
        var  aScoringPromptFile = `${aApp}_scoring-prompt.txt`
             FRT.writeFileSync( `${FRT.__dirname}/${aScoringPromptFile}`, evaluationPrompt )
 
-            FRT.sayMsg( `AIT14[ 286]  Setting .Env variables: model: '${modelName}'`, -1 )
+            FRT.sayMsg( `AIT14[ 293]  Setting .Env variables: model: '${modelName}'`, -1 )
             FRT.setEnv( "FILES_PATH",        ".",                FRT.__dirname )
             FRT.setEnv( "FILES_NAME",        aScoringPromptFile, FRT.__dirname )
             FRT.setEnv( "OLLAMA_MODEL_NAME", modelName,          FRT.__dirname )
 
-       var  aScoringSections   = process.env.SCORING_SECTIONS || ''                        // .(50521.01.1 RAM Add SCORING_SECTIONS Beg)
+       var  aScoringSections   = process.env.SCORING_SECTIONS || ''                        // .(50521.01.1 RAM Add SCORING_SECTIONS Override Beg)
        if ( aScoringSections  != '') {
             aScoringSections   =  `,${aScoringSections.toLowerCase().replace( /[^a-z,]/ , '' ) },`
        var  aLogger            =  aScoringSections.match( ',log,'   ) ? 'log' : ''
@@ -304,7 +305,7 @@ async function  evaluateResponse( modelName, userPrompt, systemPrompt, response,
        var  aSections          =  aScoringSections.split( ',' ).filter( aSection => {  return aList.includes( `,${aSection},`) } ).join(',' );                
             process.env.LOGGER =  aSections ? '' : aLogger 
             FRT.setEnv( "SHOW_SECTIONS",  aSections, FRT.__dirname )
-            FRT.sayMsg( `AIT14[ 306]  Setting .Env variables: sections: '${aSections}', '${aLogger}'`, 1 )
+            FRT.sayMsg( `AIT14[ 308]  Setting .Env variables: sections: '${aSections}', '${aLogger}'`, 1 )
             }                                                                              // .(50521.01.1 End)
   try {
 /*     var  pParms        = 
@@ -328,15 +329,15 @@ async function  evaluateResponse( modelName, userPrompt, systemPrompt, response,
     try {                                                                                                   // .(50507.05.3 RAM Debug attempts to call search script Beg)
     var  aCacheBuster   =  Date.now();    
     var  aSearchScript  = `./search_${aVer}.mjs?cache=${aCacheBuster}`                                     // .(50507.05.4 RAM Add Cache Buster)
-                           FRT.sayMsg( `AIT14[ 294]  Attempting to load script: ${aSearchScript}\n`, -1 );
+                           FRT.sayMsg( `AIT14[ 332]  Attempting to load script: ${aSearchScript}\n`, -1 );
 //       const module = await import(aSearchScript);
                            process.env.OLLAMA_MODEL_NAME = aModel
                            await import( aSearchScript );
 //                         await import( './test.mjs' )
 //                         await import( './search_${aVer}.mjs' )
 //                         await import( './search_u2.09.mjs' )
-                           FRT.sayMsg( `AIT14[ 300]  Load of search script successful!`, -1 );
-     } catch( error ) {    FRT.sayMsg( `AIT14[ 301]  Load of search script failed error:\n                 ${error}`, -1);
+                           FRT.sayMsg( `AIT14[ 339]  Load of search script successful!`, -1 );
+     } catch( error ) {    FRT.sayMsg( `AIT14[ 340]  Load of search script failed error:\n                 ${error}`, -1);
          }                                                                                                  // .(50507.05.3 End)
                
 //       process.env.JSON_RESPONSE = "/E:/Repos/Robin/AIDocs_/dev01-robin/docs/a14_grading-app/25.05.May/_t001_gemma2;2b'_1,1-test on rm228p/a14_t001.13.4.50502.0905_Response.json"
@@ -349,7 +350,7 @@ async function  evaluateResponse( modelName, userPrompt, systemPrompt, response,
 //  return { content: pResult.message.content, metrics: pResult };
     return { content: aResponse, metrics: pMetrics };
 
-     } catch (error) {     FRT.sayMsg( `AIT14[ 330]  Error evaluating response with Ollama:\n                 ${error.message}`, -1 );
+     } catch (error) {     FRT.sayMsg( `AIT14[ 353]  Error evaluating response with Ollama:\n                 ${error.message}`, -1 );
          throw new Error( 'Error' );
          }
 } // eof evaluateResponse
@@ -366,7 +367,7 @@ function getScores( evaluation ) {
   
     let  match;                                             // Collect scores and reformat
  while ((match = scoreRegex.exec(evaluation)) !== null) {
-        FRT.sayMsg( `AIT14[ 347]  getScores found: ${match}`, -1 )
+        FRT.sayMsg( `AIT14[ 370]  getScores found: ${match}`, -1 )
      if (match[1] !== 'Total Score') {                       // Skip "Total Score" during the regex collection phase
     var  score = parseInt(match[2], 10);
          totalScore += score;
@@ -393,7 +394,7 @@ return { scores, totalScore, scoreCount, formattedEvaluation };
        var  aStatRunId       =  aStatRow.split( '\t' )[0].trim()
        var  nStatRow         =  mTestIds.findIndex( aTestId => aStatRunId.match( aTestId ) )         
        var  aFound           = (nStatRow == -1) ? "Not Found" : `Found in mTestIds index, ${ nStatRow }`                      
-//                              FRT.sayMsg( `AIT14[ 113]  Looking for RunId, '${aStatRunId}, in row ${i}': ${aFound}`, 1 )
+//                              FRT.sayMsg( `AIT14[ 397]  Looking for RunId, '${aStatRunId}, in row ${i}': ${aFound}`, 1 )
 //      if (nStatRow > -1) { debugger }
    return  nStatRow > -1    // aTestId found if findIndex returns valid row number 
             }                                                                                               // .(50507.08a.2 End) 
@@ -417,7 +418,7 @@ return { scores, totalScore, scoreCount, formattedEvaluation };
        var  aStatRespId      =  aResponseFile.match( `${aStatTestId}[.0-9]+` );                             // .(50507.08b.4 RAM Extract aStatRestId to match. May fail)
             aStatRespId      =  aStatRespId ? aStatRespId[0] : ''                       
         if (aStatRespId == aRespId) { 
-            FRT.sayMsg( `AIT14[ 398]  Found ${nRow}: ${ path.basename( aResponseFile ) }.`, -1 )
+            FRT.sayMsg( `AIT14[ 421]  Found ${nRow}: ${ path.basename( aResponseFile ) }.`, -1 )
             mFoundFiles.push(   aResponseFile.replace( /\.txt$/, '.json' ) )
             break 
             }               

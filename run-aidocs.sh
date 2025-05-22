@@ -30,6 +30,7 @@
 #.(50510.03   5/10/25 RAM  8:30a| Bump Version
 #.(50516.04   5/16/25 RAM 10:00a| Bump AIDocs version in run-aidocs.sh
 #.(50519.03   5/19/25 RAM  8:30a| Bump AIDocs version to u2.10.139, here
+#.(50522.02   5/22/25 RAM  9:15a| Bump AIDocs version to u2.10.140
 #
 ##PRGM     +====================+===============================================+
 ##ID 69.600. Main0              |
@@ -43,6 +44,7 @@
   aVer="v2.09.50510.1730"  # run-aidocs.sh                                              # .(50510.03.1)
   aVer="u2.10.138\`50516.1001"  # set-aidocs.sh                                         # .(50516.04.3)
   aVer="u2.10.139\`50519.0830"  # set-aidocs.sh                                         # .(50519.03.1)
+  aVer="u2.10.140\`50522.0915"  # set-aidocs.sh                                         # .(50522.02.1)
 
 function exit_wCR() {
       if [ "${OS:0:7}" != "Windows" ]; then echo ""; fi
