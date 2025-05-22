@@ -42,6 +42,8 @@
 #.(50513.05   5/13/25 RAM  7:30p| Implement bEnvs debug msgs
 #.(50514.07   5/14/25 RAM  7:45p| Bump version from u2.09 to u2.10
 #.(50513.05b  5/15/25 RAM  9:15a| More bEnvs 
+#.(50521.01   5/21/25 RAM  9:30a| Override scoring display sections
+#.(50510.04b  5/21/25 RAM 11:15a| Use Coherence instead of Quality
 #
 ##PRGM     +====================+===============================================+
 ##ID S1201. Main0              |
@@ -100,10 +102,12 @@
        var{ bDebug, bDoit }  =  FRT.setVars()
             global.bQuiet    =  0                                                       // .(50503.04.1 RAM Was 2, quieting sayMsg)
             global.bNoLog    = (process.env.LOGGING || '').match( /log/ ) == null                           // .(50510.01.1)
-            sayMsg( `S1401[ 102]  APP: '${aApp}', bDoit: '${bDoit}, bDebug: '${bDebug}', DRYRUN: '${process.env.DRYRUN}', SCORING: '${process.env.SCORING}', PC_CODE: '${process.env.PC_CODE}', aLog: '${"   "}', bNoLog: '${global.bNoLog ? 1 : 0}'`, bEnvs ); // .(50513.05.11) // process.exit() 
+            sayMsg( `S1401[ 104]  APP: '${aApp}', bDoit: '${bDoit}, bDebug: '${bDebug}', DRYRUN: '${process.env.DRYRUN}', SCORING: '${process.env.SCORING}', PC_CODE: '${process.env.PC_CODE}', aLog: '${"   "}', bNoLog: '${global.bNoLog ? 1 : 0}'`, bEnvs ); // .(50513.05.11) // process.exit() 
 
        var  pArgs            =  parseArgs()
-            aModel           =  pArgs.modelName || 'gemma2:2b'
+//          aModel           =  pArgs.modelName || 'gemma2:2b'                                              //#.(50521.02.1)
+            aModel           =  process.env.SCORING_MODEL ? process.env.SCORING_MODEL : pArgs.modelName     // .(50521.02.1)
+            aModel           =  aModel ? aModel : 'gemma2:2b'                                               // .(50521.02.2)
        var  aOth_App         =  pArgs.app       || 's13'                                                    // .(50503.05.x Get Oth_App .env Beg)
        var  aOth_App2        = `a${pArgs.app.slice(1)}`                                                     // .(50510.02.1)
 //     var  mTestIds         = (pArgs.testIds   || 't041').split( /[ ,]/ )                                  //#.(50507.08a.1) 
@@ -137,7 +141,7 @@
             }                                                                                               // .(50510.02.4 End)      
       var   mRespIds = [];  if (FRT.checkFileSync( aRunTestsFile ).isFile) {                            
             mRespIds         =  FRT.readFileSync(  aRunTestsFile ).trim().split( '\n' )  }                                           
-                                FRT.sayMsg( `AIT14[ 130]  Looking for these RunIds, '${ mRespIds.join( ', ') }'.`, -1 )
+                                FRT.sayMsg( `AIT14[ 143]  Looking for these RunIds, '${ mRespIds.join( ', ') }'.`, -1 )
 //     var  mResponseFiles   =  mStatsSheet.filter( findTestIds )                                           //#.(50507.08b.1 RAM Don't use findTestIds)
 //          mResponseFiles   =  mResponseFiles.map( aRow => aRow.split('\t')[26].replace(/\.txt/, '.json')) //#.(50507.08b.1)
        var  mResponseFiles   =  findRespIds( mStatsSheet, mRespIds )                                        // .(50507.08b.1 RAM Do Use findRespIds)
@@ -186,7 +190,7 @@ async  function  scoreTest( aStatsSheetFile, aResponseFile, i ) {
 
        var  pVars            =  FRT.getEnvVars( FRT.__dirname )    
        var  aTestId          =  pVars.SESSION_ID                                        // .(50503.04.3 RAM Current s14 TestId)
-            prt1stMsg( aApp, aTestId, pJSON_Response.RunId.trim() )                     // .(50503.04b.2).(50503.04.4 RAM Use prt1stMsg)
+                                prt1stMsg( aApp, aTestId, pJSON_Response.RunId.trim() ) // .(50503.04b.2).(50503.04.4 RAM Use prt1stMsg)
 
 //     var  aSysPrompt       =  FRT.readFileSync( './s14_system-prompts.txt' ).slice(32).replace( /[ "\r\n]+$/, "");;
 //     var  aUsrPrompt       =  FRT.readFileSync( './s14_user-prompts.txt'   ).slice( 6).replace( /[ "\r\n]+$/, "");
@@ -196,7 +200,7 @@ async  function  scoreTest( aStatsSheetFile, aResponseFile, i ) {
            // Evaluate response
       var { content: aEvaluation, pMetrics } = await evaluateResponse( aModel, aUsrPrompt, aSysPrompt, aResponse, aScoringPrompt );
        
-       var  pScores = getScores( aEvaluation );
+       var  pScores          =  getScores( aEvaluation );
 //    var { scores, totalScore, scoreCount, formattedEvaluation } = getScores( aEvaluation );
 
        var  pStats           =  pJSON_Response.ModelQuery.RunStats
@@ -206,15 +210,17 @@ async  function  scoreTest( aStatsSheetFile, aResponseFile, i ) {
 //          pStats.Relevance =  pScores.scores[2].score || 0      
 //          pStats.Overall   =  pScores.scores[3].score || 0      
             pStats.Accuracy  =  getScore( 'Accuracy'    )                               // .(50510.04.2 RAM Position in pScores.scores array wasn't cutting it)
-            pStats.Quality   =  getScore( 'Quality'     )                  
-        if(!pStats.Quality)  {  pStats.Quality = getScore( 'Coherence'   ) }            // .(50510.04.3 RAM ??) 
+//          pStats.Quality   =  getScore( 'Quality'     )                               //#.(50510.04b.1 RAM Get rid of Quality)
+//      if(!pStats.Quality)  {  pStats.Quality = getScore( 'Coherence'   ) }            //#.(50510.04.3 RAM ??).(50510.04b.1)
+            pStats.Coherence =  getScore( 'Coherence'   )                               // .(50510.04b.2 RAM Use Coherence)
             pStats.Relevance =  getScore( 'Relevance'   )                  
             pStats.Overall   =  getScore( 'Total Score' )                  
         if(!pStats.Overall)  {  pStats.Overall = getScore( 'TotalScore' ) }             // .(50510.04.4 RAM ??) 
 
                                 mNotFound = []                                          // .(50510.04.5 RAM Override those found in getScore)
         if (!pStats.Accuracy ){ mNotFound.push( "Accuracy"  ) }            
-        if (!pStats.Quality  ){ mNotFound.push( "Quality"   ) }            
+//      if (!pStats.Quality  ){ mNotFound.push( "Quality"   ) }                         //#.(50510.04b.3)        
+        if (!pStats.Coherence){ mNotFound.push( "Coherence" ) }                         // .(50510.04b.3)
         if (!pStats.Relevance){ mNotFound.push( "Relevance" ) }                         // .(50510.04.1 End)
 
 //      if (mNotFound.length > 0) {                                                     //#.(50510.04.6 Beg)
@@ -235,9 +241,10 @@ async  function  scoreTest( aStatsSheetFile, aResponseFile, i ) {
         if (aRow.length > 0) {
             aRow             =    aRow.splice(-1)[0]                                    // .(50503.03.4 RAM get the last one)
        var  mCols            =    aRow.split( "\t" )
-            mCols[7]         = `${pStats.Accuracy }`.padStart(3)
-            mCols[8]         = `${pStats.Quality  }`.padStart(3)
-            mCols[9]         = `${pStats.Relevance}`.padStart(3)
+            mCols[7]         = `${pStats.Accuracy  }`.padStart(3)
+//          mCols[8]         = `${pStats.Quality   }`.padStart(3) //                    //#.(50510.04b.4)
+            mCols[8]         = `${pStats.Coherence }`.padStart(3) //                    // .(50510.04b.4)
+            mCols[9]         = `${pStats.Relevance }`.padStart(3)
        var  aScore           = `with these scores of ${mCols[7].trim()}, ${mCols[8].trim()}, ${mCols[9].trim()}` 
             mSpreadsheet[ mSpreadsheet.indexOf( aRow ) ] = mCols.join( "\t" )           // .(50503.03.5)
         } else {
@@ -282,10 +289,23 @@ async function  evaluateResponse( modelName, userPrompt, systemPrompt, response,
        var  aScoringPromptFile = `${aApp}_scoring-prompt.txt`
             FRT.writeFileSync( `${FRT.__dirname}/${aScoringPromptFile}`, evaluationPrompt )
 
-            FRT.sayMsg( 'AIT14[ 268]  Setting .Env variables', -1 )
+            FRT.sayMsg( `AIT14[ 286]  Setting .Env variables: model: '${modelName}'`, -1 )
             FRT.setEnv( "FILES_PATH",        ".",                FRT.__dirname )
             FRT.setEnv( "FILES_NAME",        aScoringPromptFile, FRT.__dirname )
             FRT.setEnv( "OLLAMA_MODEL_NAME", modelName,          FRT.__dirname )
+
+       var  aScoringSections   = process.env.SCORING_SECTIONS || ''                        // .(50521.01.1 RAM Add SCORING_SECTIONS Beg)
+       if ( aScoringSections  != '') {
+            aScoringSections   =  `,${aScoringSections.toLowerCase().replace( /[^a-z,]/ , '' ) },`
+       var  aLogger            =  aScoringSections.match( ',log,'   ) ? 'log' : ''
+            aLogger           +=  aScoringSections.match( ',input,' ) ? ',input' : ''
+//          aSections          =  aScoringSections.match( ',Parms,Docs,Search,Stats,Results,' )
+       var  aList              = ',parms,docs,search,stats,results,runid,'
+       var  aSections          =  aScoringSections.split( ',' ).filter( aSection => {  return aList.includes( `,${aSection},`) } ).join(',' );                
+            process.env.LOGGER =  aSections ? '' : aLogger 
+            FRT.setEnv( "SHOW_SECTIONS",  aSections, FRT.__dirname )
+            FRT.sayMsg( `AIT14[ 306]  Setting .Env variables: sections: '${aSections}', '${aLogger}'`, 1 )
+            }                                                                              // .(50521.01.1 End)
   try {
 /*     var  pParms        = 
            {  model     :  modelName
