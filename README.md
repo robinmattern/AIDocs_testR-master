@@ -422,7 +422,7 @@ D. Set Hardware Specs
 
     </details>
 
- 2. Let's open VSCode and look at the `run-tests.sh` script in the `AIDocs-test1` folder.
+ 2. Let's open VSCode and look at the `run-tests.sh` script in the `AIDocs-testR` folder.
 
     <details><summary><code>code AIDocs_testR-master.code-workspace</code></summary>  
 
@@ -438,7 +438,7 @@ D. Set Hardware Specs
       <img      src="docs/appinfo/d00_AIDocs_testR/IMGs/d00-002a_Edit-run-tests.sh.png"></img>
     </details>
 
- 4. Set the `DRY_RUN` parameter to "0" and SCORING to "0" to generate a `PC_CODE` without running a model.  
+ 4. Set the `DRY_RUN` parameter to "1" and SCORING to "0" to generate a `PC_CODE` without running a model.  
  5. Open the VSCode Terminal, and run the first test, `t011` for the first model app, `s11`.  
     <details><summary><code>ait s11 t011</code></summary>
 
@@ -461,7 +461,7 @@ D. Set Hardware Specs
 
  6. You can set the `PC_CODE` to a more readable code to uniquely identify your PC, e.g. `bt001p`.  
 
-    <details><summary><span style="font-size:11px; padding-left:23px">Change line 21    </span><code> &nbsp; export PC_CODE=""</code></summary> 
+    <details><summary><span style="font-size:11px; padding-left:23px">Change line 21    </span><code> &nbsp; export PC_CODE="bt001p"</code></summary> 
        <ul><li style="font-size:11px;"><code>PC_CODE</code>: by setting it, the Hardware specs of your PC will be associated with this code.</li></ul>  
     </details>  
 
@@ -490,7 +490,38 @@ E. Run three sample models
 </summary>
 
  1. To set the parameters back for a real model test run, set the following:
+ 
+    <details><summary>Change these parameters</summary>
 
+      <details style="padding-left:20px;"><summary><span style="font-size:11px; padding-left:17px">Comment line 22    </span><code> # export LOGGER="log"</code></summary>
+      <ul><li style="font-size:11px;">Commenting-out a parameter disables it.<br>  
+          Normally multiple sections are displayed when the model is run -- for the searched documents, the results and run statistics.<br>
+          Setting <code>LOGGER</code> to <code>log</code> hides those sections, just showing a two line summary for each nodel test run.  
+          </li></ul>   
+      </details>
+
+      <details style="padding-left:20px;"><summary><span style="font-size:11px; padding-left:2px" >Un-comment line 24 </span><code> &nbsp;  export LOGGER="log,inputs"</code></summary>
+         <ul><li style="font-size:11px;"><code>LOGGER</code>: by setting this log display parameter to <code>log,inputs</code>, 
+          we'll see all the input variables before the next model run or series of model test runs.
+      </details>  
+  
+      <details style="padding-left:20px;"><summary><span style="font-size:11px; padding-left:25px">Change line 33     </span><code> &nbsp; export DRY_RUN="0";</code></summary> 
+         <ul><li style="font-size:11px;"><code>DRYRUN</code> by turning it on, the model test run invoke the ollama model.</li></ul>
+      </details>  
+  
+      <details style="padding-left:20px;"><summary><span style="font-size:11px; padding-left:25px">Change line 34     </span><code> &nbsp; export SCORING="1";</code></summary> 
+         <ul><li style="font-size:11px;"><code>SCORING</code> by turning it on, the model test run will be scored.</li></ul>
+      </details>  
+  
+      <details style="padding-left:20px;"><summary><span style="font-size:11px; padding-left:2px" >Un-comment line 38 </span><code> &nbsp; export SEARCH_MMODEL="qwen2:0.5"</code></summary>
+         <ul><li style="font-size:11px;"><code>SEARCH_MODEL</code> by entering an Ollama model name, the model test run or runs will use this model. The <code>qwen2:0.5</code> is the smallest and fastest model</li></ul>
+      </details>  
+
+      <details style="padding-left:20px;"><summary><span style="font-size:11px; padding-left:2px" >Un-comment line 39 </span><code> &nbsp; export SCORING_MMODEL="qwen2:0.5"</code></summary>
+         <ul><li style="font-size:11px;"><code>SCORING_MODEL</code> The <code>qwen2:0.5</code> model is the smallest and fastest model</li></ul>
+      </details>  
+
+    </details>
     <details><summary>Here is what the `run-tests.sh` paramaters should look like.</summary>
       <img src="docs/appinfo/d00_AIDocs_testR/IMGs/d00-002c_Edit-run-tests.sh.png"></img>
     </details>  
@@ -542,38 +573,6 @@ E. Run three sample models
         44  ##SRCE     +====================+===============================================+
         45  ##RFILE    +====================+=======+===================+======+=============+
         46
-
-    </details>
-
-    <details><summary>Change these parameters</summary>
-
-      <details style="padding-left:20px;"><summary><span style="font-size:11px; padding-left:17px">Comment line 27    </span><code> # export LOGGER="log"</code></summary>
-      <ul><li style="font-size:11px;">Commenting-out a parameter disables it.<br>  
-          Normally multiple sections are displayed when the model is run -- for the searched documents, the results and run statistics.<br>
-          Setting <code>LOGGER</code> to <code>log</code> hides those sections, just showing a two line summary for each nodel test run.  
-          </li></ul>   
-      </details>
-
-      <details style="padding-left:20px;"><summary><span style="font-size:11px; padding-left:2px" >Un-comment line 29 </span><code> &nbsp;  export LOGGER="log,inputs"</code></summary>
-         <ul><li style="font-size:11px;"><code>LOGGER</code>: by setting this log display parameter to <code>log,inputs</code>, 
-          we'll see all the input variables before the next model run or series of model test runs.
-      </details>  
-  
-      <details style="padding-left:20px;"><summary><span style="font-size:11px; padding-left:25px">Change line 33     </span><code> &nbsp; export DRY_RUN="0";</code></summary> 
-         <ul><li style="font-size:11px;"><code>DRYRUN</code> by turning it on, the model test run invoke the ollama model.</li></ul>
-      </details>  
-  
-      <details style="padding-left:20px;"><summary><span style="font-size:11px; padding-left:25px">Change line 34     </span><code> &nbsp; export SCORING="1";</code></summary> 
-         <ul><li style="font-size:11px;"><code>SCORING</code> by turning it on, the model test run will be scored.</li></ul>
-      </details>  
-  
-      <details style="padding-left:20px;"><summary><span style="font-size:11px; padding-left:2px" >Un-comment line 38 </span><code> &nbsp; export SEARCH_MMODEL="qwen2:0.5"</code></summary>
-         <ul><li style="font-size:11px;"><code>SEARCH_MODEL</code> by entering an Ollama model name, the model test run or runs will use this model. The <code>qwen2:0.5</code> is the smallest and fastest model</li></ul>
-      </details>  
-
-      <details style="padding-left:20px;"><summary><span style="font-size:11px; padding-left:2px" >Un-comment line 39 </span><code> &nbsp; export SCORING_MMODEL="qwen2:0.5"</code></summary>
-         <ul><li style="font-size:11px;"><code>SCORING_MODEL</code> The <code>qwen2:0.5</code> model is the smallest and fastest model</li></ul>
-      </details>  
 
     </details>
     
