@@ -19,7 +19,7 @@
 ##SRCE     +====================+===============================================+
 #
 #    export LOGGER=
-#    export LOGGER="log"                        # .(50514.01.1 RAM Override display sections -- no spaces before or after = sign)
+     export LOGGER="log"                        # .(50514.01.1 RAM Override display sections -- no spaces before or after = sign)
 #    export LOGGER="inputs"
 #    export LOGGER="log,inputs"
 
@@ -28,15 +28,15 @@
      export DRYRUN="0"                          # .(50506.03.7 RAM Add DRYRUN)
      export SCORING="1"                         # .(50507.02.8 RAM Run scoring after models are run)
 
-     export PC_CODE="bt001p"
+     export PC_CODE=""
 
      export SEARCH_MODEL="qwen2:0.5b"           # .(50514.01.2 RAM Override models)
      export SCORING_MODEL="qwen2:0.5b"          # .(50514.01.3)
-     export SCORING_SECTIONS="Results,RunId"    # .(50521.01.1 RAM Override display sections for scoring model run)
+#    export SCORING_SECTIONS="Results,RunId"    # .(50521.01.1 RAM Override display sections for scoring model run)
 
      export SYSTEM_PROMPT="all-sys: Summarize the information provided and answer the user's prompt accordingly."     
      export USER_PROMPT="all-usr: What is so special about ios 17"        
-     export RAG_COLLECTIONS="s13_apple-ipad-pdfs"        
+     export RAG_COLLECTIONS="s13_apple-ipad-txt"        
 
 ##SRCE     +====================+===============================================+
 ##RFILE    +====================+=======+===================+======+=============+
