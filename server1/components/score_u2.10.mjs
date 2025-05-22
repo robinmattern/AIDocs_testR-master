@@ -43,7 +43,7 @@
 #.(50514.07   5/14/25 RAM  7:45p| Bump version from u2.09 to u2.10
 #.(50513.05b  5/15/25 RAM  9:15a| More bEnvs 
 #.(50521.01   5/21/25 RAM  9:30a| Override scoring display sections
-#.(50510.04b  5/21/25 RAM 11:15a| Use Coherence instead of Quality
+#.(50510.04b  5/21/25 RAM 11:15a| Use Coherence instead of Quality  
 #
 ##PRGM     +====================+===============================================+
 ##ID S1201. Main0              |
