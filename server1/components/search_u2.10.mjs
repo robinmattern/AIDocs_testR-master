@@ -136,6 +136,7 @@
 #.(50405.01c  5/17/25 RAM  1:04p| Put stats into a month folder  
 #.(50514.01b  5/19/25 RAM 10:11a| Overide SEARCH_MODEL
 #.(50409.03b  5/19/25 RAM 10:15a| Set searchPrompt = aWebSearch
+#.(50404.01b  5/22/25 RAM  7:20a| Show SYS_PROMPT_CD in Search section
 #
 ##PRGM     +====================+===============================================+
 ##ID S1201. Main0              |
@@ -691,7 +692,8 @@ import   ollama              from "ollama";
 //          usrMsg(   `  Docs:      "${texts.length} Sources,${ `${aSources.length}`.padStart(6) } bytes from ${document}"`, shoMsg('Parms')   ) // .(50404.01.12).(50331b.01.5).(50331.01.5 RAM Add documents).(50430.04.15)
             usrMsg(   `  Docs:      "${pJSON_Results.Docs}"`                                                               , shoMsg('Parms')   ) // .(50430.04.16).(50404.01.12).(50331b.01.5).(50331.01.5 RAM Add documents)
             }
-            usrMsg(   `  SysPrompt: "${ pParms.prompt.replace( /{Docs}/, "" ).replace( /{Query}\./, "" ) }"`               , shoMsg('Parms')   ) // .(50404.01.13)
+//          usrMsg(   `  SysPrompt:                "${ pParms.prompt.replace( /{Docs}/, "" ).replace( /{Query}\./, "") }"` , shoMsg('Parms')   ) //#.(50404.01.13)..(50404.01b.1)
+            usrMsg(   `  SysPrompt: "${pParms.qpc}: ${ pParms.prompt.replace( /{Docs}/, "" ).replace( /{Query}\./, "") }"` , shoMsg('Parms')   ) // .(50404.01b.1 RAM Show SYS_CD).(50404.01.13)
 //          usrMsg(   `  Query:     "${query}"`                                                                            , shoMsg('Parms')   ) //#.(50404.01.14).(50408.08.1)
 //          usrMsg(   `  UsrPrompt: "{Query}: ${query}"` )  // aka aiPrompt, Model Query Prompt                            , shoMsg('Parms')   ) // .(50408.08.1 Was Query).(50404.01.14)
             usrMsg(   `  UsrPrompt: "${pParms.qpc}: ${query}"`                                                             , shoMsg('Parms')   ) // .(50410.04a.3).(50408.08.1 Was Query).(50404.01.14)
