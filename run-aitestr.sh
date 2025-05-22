@@ -66,7 +66,7 @@
    if [ "${1:0:3}"    == "imp"   ]; then aCmd="import  "; aApp=s13; shift; b=1; fi      # .(50505.05.1
    if [ "${1:0:3}"    == "sql"   ]; then aCmd="sqlite  "; aApp=s13; shift; b=1; fi      # .(50505.06.1)
    if [ "${1:0:3}"    == "chr"   ]; then aCmd="chroma  "; aApp=s13; shift; b=1;         # .(50520.01b.1).(50505.06.2)
-      if [ "${2:0:3}" == "imp"   ]; then aCmd="import  "; aApp=s13; shift; b=1; fi; fi  # .(50520.01b.2 RAM Add chroma import)  
+      if [ "${1:0:3}" == "imp"   ]; then aCmd="import  "; aApp=s13; shift; b=1; fi; fi  # .(50520.01b.2 RAM Add chroma import)  
    if [ "${1:0:3}"    == "exa"   ]; then aCmd="example "; aApp=s13; shift; b=1; fi      # .(50505.04.2 RAM Add example)
    if [ "${aApp}"     == ""      ]; then                  aApp=$1;  shift; fi           # .(50420.01b.7)
                                          aDir=""; aTests="$@"                           # .(50429.05.1)
@@ -76,7 +76,7 @@
    if [ "${aApp:0:3}" == "s12"   ]; then aDir="server1/s12_search-web-app"; shift; fi   # .(50429.05.3)
    if [ "${aApp:0:3}" == "s13"   ]; then aDir="server1/s13_search-rag-app"; shift; fi   # .(50429.05.4)
 
-#  echo "-- aCmd: '${aCmd}', aApp: '${aApp}', PWD: '${aPWD/*robin/}'; aDir: '${aDir}', aTests: '${aTests}'"; #  exit # .(50429.05.5
+#  echo "-- aCmd: '${aCmd}', aApp: '${aApp}', PWD: '${aPWD/*robin/}'; aDir: '${aDir}', aTests: '${aTests}'";    exit # .(50429.05.5
 
    if [ "${b}" == "1" ] && [ "${aDir}" == "" ]; then                                    # .(50429.05.6 Beg)
       echo -e "\n* Note: You didn't provide a valid App: s11, s12 or s13.";        aCmd="help"
