@@ -69,6 +69,7 @@
 #.(50515.01   4/15/25 RAM  8:00a| Add none to shoMsg
 #.(50517.01   5/17/25 RAM 10:30a| Write and use sayColor_Log
 #.(50519.04   5/19/25 RAM 12:15p| Put aPC_CODE into THE_SERVER
+#.(50519.04b  5/20/25 RAM 11:25a| Opps
 #
 ##PRGM     +====================+===============================================+
 ##ID 69.600. Main0              |
@@ -473,7 +474,7 @@ function  fmtResults(results) {
   function  getServerInfo( ) {                                                          // .(50330.04.8 RAM Write getServerInfo Beg)
        var  aPC_CODE         =  (process.env.THE_PC_CODE || '').toLowerCase()           // .(50519.04.1 RAM)
        var  aServer          =   process.env.THE_SERVER  || ''
-       var  aServer          ="${aPC_CODE}-${ aServer.replace( /^.+-/, '' ) }"          // .(50519.04.2 RAM Put aPC_CODE into THE_SERVER)
+       var  aServer          =`${aPC_CODE}-${ aServer.replace( /^.+-/, '' ) }`          // .(50519.04b.1 RAM Opps).(50519.04.2 RAM Put aPC_CODE into THE_SERVER)
        var  aCPU_GPU         =`${process.env.THE_CPU}${                                 // .(50330.04b.5 Beg)
                                 (process.env.THE_CPU != process.env.THE_GPU)
                           ? `, ${process.env.THE_GPU}` : '' }`
